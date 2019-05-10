@@ -67,7 +67,14 @@ class AthenaBatch(object):
 
 class AthenaShell(Cmd, object):
 
-    multiline_commands = ['WITH', 'SELECT', 'ALTER', 'CREATE', 'DESCRIBE', 'DROP', 'MSCK', 'SHOW', 'USE', 'VALUES']
+    multiline_commands = [
+        '(', 'select', 'desc', 'using', 'with', 'values', 'create', 'table', 'insert', 'delete',
+        'describe', 'grant', 'revoke', 'explain', 'show', 'use', 'drop', 'alter', 'set', 'reset',
+        'start', 'commit', 'rollback', 'call', 'prepare', 'deallocate', 'execute', 'msck', 'values',
+        'SELECT', 'DESC', 'USING', 'WITH', 'VALUES', 'CREATE', 'TABLE', 'INSERT', 'DELETE',
+        'DESCRIBE', 'GRANT', 'REVOKE', 'EXPLAIN', 'SHOW', 'USE', 'DROP', 'ALTER', 'SET', 'RESET',
+        'START', 'COMMIT', 'ROLLBACK', 'CALL', 'PREPARE', 'DEALLOCATE', 'EXECUTE', 'MSCK', 'VALUES'
+    ]
 
     def __init__(self, athena, db=None):
         super().__init__(multiline_commands=AthenaShell.multiline_commands)
@@ -78,7 +85,6 @@ class AthenaShell(Cmd, object):
         self.dbname = db
 
         self.execution_id = None
-
         self.row_count = 0
 
         self.set_prompt()
@@ -89,6 +95,20 @@ class AthenaShell(Cmd, object):
 
     def set_prompt(self):
         self.prompt = 'athena:%s> ' % self.dbname if self.dbname else 'athena> '
+
+    def init_history(self):
+        try:
+            readline.read_history_file(self.hist_file)
+            readline.set_history_length(HISTORY_FILE_SIZE)
+            readline.write_history_file(self.hist_file)
+        except IOError:
+            readline.write_history_file(self.hist_file)
+
+        atexit.register(self.save_history)
+
+    def preloop(self):
+        if os.path.exists(self.hist_file):
+            readline.read_history_file(self.hist_file)
 
     def cmdloop_with_cancel(self, intro=None):
         try:
@@ -102,22 +122,8 @@ class AthenaShell(Cmd, object):
                 print('\r')
             self.cmdloop_with_cancel(intro)
 
-    def preloop(self):
-        if os.path.exists(self.hist_file):
-            readline.read_history_file(self.hist_file)
-
     def postloop(self):
         self.save_history()
-
-    def init_history(self):
-        try:
-            readline.read_history_file(self.hist_file)
-            readline.set_history_length(HISTORY_FILE_SIZE)
-            readline.write_history_file(self.hist_file)
-        except IOError:
-            readline.write_history_file(self.hist_file)
-
-        atexit.register(self.save_history)
 
     def save_history(self):
         try:
@@ -134,6 +140,8 @@ ALTER DATABASE <schema>
 ALTER TABLE <table>
 CREATE DATABASE <schema>
 CREATE TABLE <table>
+CREATE TABLE <table> AS <query>
+CREATE [OR REPLACE] VIEW <view> AS <query>
 DESCRIBE <table>
 DROP DATABASE <schema>
 DROP TABLE <table>
