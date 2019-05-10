@@ -3,10 +3,15 @@ from setuptools import setup, find_packages
 
 version = '0.1.9'
 
+with open('README.md') as f:
+    long_description = f.read()
+
 setup(
     name="athena-cli",
     version=version,
     description='Presto-like CLI for AWS Athena',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/satterly/athena-cli',
     license='Apache License 2.0',
     author='Nick Satterly',
