@@ -44,9 +44,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --debug               enable debug mode
   --execute STATEMENT   execute statement in batch mode
-  --output-format FORMAT
-                        output format for batch mode [ALIGNED, VERTICAL, CSV,
-                        TSV, CSV_HEADER, TSV_HEADER, NULL]
+  --output-format {ALIGNED,VERTICAL,CSV,TSV,CSV_HEADER,TSV_HEADER,NULL}
+                        output format for batch mode
   --schema SCHEMA, --database SCHEMA, --db SCHEMA
                         default schema
   --profile PROFILE     AWS profile
@@ -68,6 +67,8 @@ ALTER DATABASE <schema>
 ALTER TABLE <table>
 CREATE DATABASE <schema>
 CREATE TABLE <table>
+CREATE TABLE <table> AS <query>
+CREATE [OR REPLACE] VIEW <view> AS <query>
 DESCRIBE <table>
 DROP DATABASE <schema>
 DROP TABLE <table>
