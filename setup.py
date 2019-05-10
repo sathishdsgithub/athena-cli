@@ -1,7 +1,7 @@
 
 from setuptools import setup, find_packages
 
-version = '0.1.8'
+version = '0.1.9'
 
 setup(
     name="athena-cli",
@@ -16,7 +16,7 @@ setup(
         'athena_cli'
     ],
     install_requires=[
-        'boto3',
+        'boto3>=1.4.4',
         'cmd2>=0.9.0.1',
         'tabulate>=0.8.1'
     ],
