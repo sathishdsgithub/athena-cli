@@ -12,8 +12,8 @@ import uuid
 
 import boto3
 import botocore
-import cmd2 as cmd
 from botocore.exceptions import ClientError, ParamValidationError
+from cmd2 import Cmd, utils
 from tabulate import tabulate
 
 LESS = "less -FXRSn"
@@ -65,13 +65,14 @@ class AthenaBatch(object):
             print(stats['QueryExecution']['Status']['StateChangeReason'])
 
 
-class AthenaShell(cmd.Cmd, object):
+class AthenaShell(Cmd, object):
 
-    multilineCommands = ['WITH', 'SELECT', 'ALTER', 'CREATE', 'DESCRIBE', 'DROP', 'MSCK', 'SHOW', 'USE', 'VALUES']
-    allow_cli_args = False
+    multiline_commands = ['WITH', 'SELECT', 'ALTER', 'CREATE', 'DESCRIBE', 'DROP', 'MSCK', 'SHOW', 'USE', 'VALUES']
 
     def __init__(self, athena, db=None):
-        cmd.Cmd.__init__(self)
+        super().__init__(multiline_commands=AthenaShell.multiline_commands)
+
+        self.allow_cli_args = False
 
         self.athena = athena
         self.dbname = db
@@ -167,10 +168,10 @@ See http://docs.aws.amazon.com/athena/latest/ug/language-reference.html
             val = val.strip()
             param_name = param_name.strip().lower()
             if param_name == 'debug':
-                self.athena.debug = cmd.cast(True, val)
+                self.athena.debug = utils.cast(True, val)
         except (ValueError, AttributeError):
-            self.do_show(arg)
-        super(AthenaShell, self).do_set(arg)
+            self.do_help(arg)
+        super().do_set(arg)
 
     def default(self, line):
         self.execution_id = self.athena.start_query_execution(self.dbname, line.command_and_args)
