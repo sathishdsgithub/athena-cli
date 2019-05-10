@@ -122,14 +122,13 @@ debug - was: False
 now: True
 ```
 
-The below error means the version of `aws` CLI is not recent enough. Upgrade
-to version 1.10.18 or higher:
-
-```
-Command 'aws sts get-caller-identity --output text --query 'Account' --profile default' returned non-zero exit status 2
-```
-
 Command history is written to `~/.athena_history`.
+
+Similar Projects
+----------------
+
+- [AthenaCLI](dbcli/athenacli): CLI tool for AWS Athena service that can do auto-completion and syntax highlighting.
+- [athena-cli (Ruby)](pengwynn/athena-cli): CLI for Amazon Athena, powered by JRuby.
 
 References
 ----------
