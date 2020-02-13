@@ -18,6 +18,7 @@ from tabulate import tabulate
 
 LESS = "less -FXRSn"
 HISTORY_FILE_SIZE = 500
+DEFAULT_WORKGROUP = 'primary'
 
 __version__ = '0.1.10'
 
@@ -233,7 +234,7 @@ See http://docs.aws.amazon.com/athena/latest/ug/language-reference.html
 
 class Athena(object):
 
-    def __init__(self, profile, region=None, bucket=None, debug=False, encryption=False):
+    def __init__(self, profile, region=None, bucket=None, workgroup=None, debug=False, encryption=False):
 
         self.session = boto3.Session(profile_name=profile, region_name=region)
         self.athena = self.session.client('athena')
@@ -241,6 +242,7 @@ class Athena(object):
         self.region = region or os.environ.get('AWS_DEFAULT_REGION', None) or self.session.region_name
 
         self.bucket = bucket or self.default_bucket
+        self.workgroup = workgroup
         self.debug = debug
         self.encryption = encryption
 
@@ -268,7 +270,8 @@ class Athena(object):
                 QueryExecutionContext={
                     'Database': db
                 },
-                ResultConfiguration=result_configuration
+                ResultConfiguration=result_configuration,
+                WorkGroup=self.workgroup
             )['QueryExecutionId']
         except (ClientError, ParamValidationError, ValueError) as e:
             print(e)
@@ -377,6 +380,11 @@ def main():
         help='AWS S3 bucket for query results'
     )
     parser.add_argument(
+        '--workgroup',
+        default=DEFAULT_WORKGROUP,
+        help='Athena workgroup'
+    )
+    parser.add_argument(
         '--server-side-encryption',
         '--encryption',
         dest='encryption',
@@ -400,7 +408,14 @@ def main():
     profile = args.profile or os.environ.get('AWS_DEFAULT_PROFILE', None) or os.environ.get('AWS_PROFILE', None)
 
     try:
-        athena = Athena(profile, region=args.region, bucket=args.bucket, debug=args.debug, encryption=args.encryption)
+        athena = Athena(
+            profile,
+            region=args.region,
+            bucket=args.bucket,
+            workgroup=args.workgroup,
+            debug=args.debug,
+            encryption=args.encryption
+        )
     except botocore.exceptions.ClientError as e:
         sys.exit(e)
 
@@ -410,6 +425,7 @@ def main():
     else:
         shell = AthenaShell(athena, db=args.schema)
         shell.cmdloop_with_cancel()
+
 
 if __name__ == '__main__':
     main()
