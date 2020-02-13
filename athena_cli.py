@@ -144,15 +144,19 @@ CREATE TABLE <table>
 CREATE TABLE <table> AS <query>
 CREATE [OR REPLACE] VIEW <view> AS <query>
 DESCRIBE <table>
+DESCRIBE <view>
 DROP DATABASE <schema>
 DROP TABLE <table>
+DROP VIEW [IF EXISTS] <view>
 MSCK REPAIR TABLE <table>
 SHOW COLUMNS FROM <table>
 SHOW CREATE TABLE <table>
+SHOW CREATE VIEW <view>
 SHOW DATABASES [LIKE <pattern>]
 SHOW PARTITIONS <table>
 SHOW TABLES [IN <schema>] [<pattern>]
 SHOW TBLPROPERTIES <table>
+SHOW VIEWS [IN <schema>] [LIKE <pattern>]
 USE [<catalog>.]<schema>
 VALUES row [, ...]
 
