@@ -20,7 +20,7 @@ LESS = "less -FXRSn"
 HISTORY_FILE_SIZE = 500
 DEFAULT_WORKGROUP = 'primary'
 
-__version__ = '0.1.10'
+__version__ = '0.1.11'
 
 
 class AthenaBatch(object):
