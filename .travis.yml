@@ -12,6 +12,9 @@ install:
 
 script: nosetests
 
+before_deploy:
+  - python setup.py sdist bdist_wheel
+
 deploy:
   provider: pypi
   edge: true # opt in to dpl v2
